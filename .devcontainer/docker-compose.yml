@@ -1,0 +1,35 @@
+services:
+  # sync devcontainer.json 'service'
+  fluke:
+    # original container naame
+    container_name: my-development
+    build:
+      context: .
+      dockerfile: Dockerfile
+    shm_size: 1gb
+    tty: true
+    # working dir
+    working_dir: /workspace
+    # setting volume (host:container)
+    volumes:
+      - ./shared:/workspace/shared
+      - mount-volume:/workspace/mount-volume
+    ports:
+      - 6379:6379
+      - 20:20
+      - 21:21
+      - 22:22
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    # dns:
+    #     - 8.8.8.8
+    restart: always
+
+volumes:
+  mount-volume:
+    name: my-volume
